@@ -33,10 +33,14 @@ Session.vim
 
 # Ignore the build and lib dirs
 build/*
+!build/.gitignore
 lib/*
+!lib/.gitignore
 
 # Ignore any executables
 bin/*
+!bin/.gitignore
+
 
 # Ignore Mac specific files
 .DS_Store
