@@ -1,6 +1,8 @@
+#include "Counter.h"
+#include "Datum.h"
+#include "Doge.h"
+#include "Doge.cpp"
 #include <iostream>
-using namespace std;
 
 int main(){
-    cout << "Herro wurldz" << endl;
 }
