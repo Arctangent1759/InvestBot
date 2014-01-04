@@ -8,7 +8,7 @@ project are set to ignore anything in this directory.
 
 Running 
 make
-will create a binary called runner in this dirctory that runs 
+will create a binary called runner in this directory that runs 
 src/main.cpp.
 
 Running
