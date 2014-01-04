@@ -23,7 +23,7 @@ of this project are set to ignore anything in this directory.
 
 doc/
 ----
-Documentation you may right for various parts of this project.
+Documentation you may write for various parts of this project.
 It is our end goal to have a usable bot that people outside of the 
 development team can learn how to use, so be sure to properly
 document your libraries.
