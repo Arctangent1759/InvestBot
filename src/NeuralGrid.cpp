@@ -1,8 +1,9 @@
 #include <iostream>
+#include <sstream>
 #include "NeuralGrid.hpp"
 #include "Edge.hpp"
 #include "math.h"
-NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOutputs, float learningRate, float maxIterations){
+NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOutputs, double learningRate, double maxIterations){
     //Init params
     this->layerSize=layerSize;
     this->numLayers=numLayers;
@@ -56,12 +57,13 @@ NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOut
         new Edge(*(this->biasNode),*((*(this->outputNodes))[i]));
     }
 }
-vector<float>& NeuralGrid::evaluate(vector<float> inputVector){
+
+vector<double>& NeuralGrid::evaluate(vector<double> inputVector){
     for (int i = 0; i < this->outputNodes->size(); i++){
         (*(this->outputNodes))[i]->clearCache();
     }
 
-    vector<float>& out = *(new vector<float>(this->numOutputs));
+    vector<double>& out = *(new vector<double>(this->numOutputs));
 
     for (int i = 0; i < out.size(); i++){
         out[i]=(*(this->outputNodes))[i]->evaluate(inputVector);
@@ -70,7 +72,7 @@ vector<float>& NeuralGrid::evaluate(vector<float> inputVector){
     return out;
 }
 
-void NeuralGrid::propogateError(vector<float> &label){
+void NeuralGrid::propogateError(vector<double> &label){
     for (int i = 0; i < this->inputNodes->size(); i++){
         (*(this->inputNodes))[i]->getError(label);
     }
@@ -83,18 +85,39 @@ void NeuralGrid::updateWeights(){
 }
 
 void NeuralGrid::train(vector<Datum> &data){
+    stringstream debugStr;
     cout << "Traning Neural Grid..." << endl;
-    cout << "<" << flush;
-    for (int iterNum=0; iterNum < this->maxIterations; iterNum++){
+    //cout << "<" << flush;
+    cout << "Learning Rate : " << this->learningRate << endl;
+    for (int iterNum=0; iterNum < this->maxIterations;){
         int progressIncrement = maxIterations/20;
-        if (iterNum%progressIncrement == 0){
-            cout << "=" << flush;
-        }
+        //cout << "--- Iteration " << iterNum << " ---" << endl;
+        //this->toString();
+        //cout << endl;
         for (int i = 0; i <data.size(); i++){
-            this->evaluate(data[i].features);
+            /*debugStr << */(this->evaluate(data[i].features))[0] /*<< " "*/;
+            cout << "=== DONE EVALUATING ===" << endl;
             this->propogateError(data[i].label);
+            cout << "=== DONE PROPAGATING ===" << endl;
             this->updateWeights();
+            cout << "=== DONE UPDATING ===" << endl;
+            iterNum++;
         }
+        //cout << endl << debugStr.str() << endl;
+        //cout << endl << flush << endl;
     }
-    cout << ">" << endl;
+    //cout << ">" << endl;
 }
+
+void NeuralGrid::toString(){
+    for (int i = 0; i < (*(this->inputNodes))[0]->outgoingEdges->size(); i++){
+        cout << (*((*(this->inputNodes))[0]->outgoingEdges))[i]->getWeight() << " ";
+    }
+    cout << endl;
+    for (int i = 0; i < (*(this->outputNodes))[0]->incomingEdges->size(); i++){
+        cout << (*((*(this->outputNodes))[0]->incomingEdges))[i]->getWeight() << " ";
+    }
+    cout << endl;
+}
+
+

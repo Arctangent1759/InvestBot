@@ -12,22 +12,23 @@ int main(){
 
     vector<Datum> trainingData(floor(numPeriods*2*M_PI*samplingRate));
     for (int i = 0; i < trainingData.size(); i++){
-        float x = (i*numPeriods*2*M_PI)/trainingData.size();
-        float y = sin(x);
-        trainingData[i].features = vector<float>(1,x);
-        trainingData[i].label = vector<float>(1,y);
+        double x = (i*numPeriods*2*M_PI)/trainingData.size();
+        double y = sin(x);
+        cout << x << " " << y << endl;
+        trainingData[i].features = vector<double>(1,x);
+        trainingData[i].label = vector<double>(1,y);
     }
 
     n.train(trainingData);
 
-    float userInput;
+    double userInput;
 
     while (true){
         cout << ">> ";
         cin >> userInput;
         cout << endl;
-        float netOutput=(n.evaluate(vector<float>(1,userInput))[0]);
-        float actualVal=sin(userInput);
+        double netOutput=(n.evaluate(vector<double>(1,userInput))[0]);
+        double actualVal=sin(userInput);
         cout << "Value computed by neural net:\t" << netOutput << endl;
         cout << "Value computed by std::sin :\t" << actualVal << endl;
         cout << "Error : \t\t" << netOutput - actualVal << endl;

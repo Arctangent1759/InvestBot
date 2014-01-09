@@ -33,6 +33,7 @@ class Node{
     public:
 
         friend class Edge;
+        friend class NeuralGrid;
 
         /**
          *
@@ -48,13 +49,13 @@ class Node{
          * incoming edges.
          * Then, applies the sigmoid transformation to 
          * the resulting value, and returns the output
-         * float.
+         * double.
          *
-         * @param a vector of feature float values.
+         * @param a vector of feature double values.
          * @return the evaluation value
          *
          */
-        virtual float evaluate(vector<float> &inputVector); 
+        virtual double evaluate(vector<double> &inputVector); 
 
         /**
          *
@@ -65,7 +66,7 @@ class Node{
          * @return the error value
          *
          */
-        virtual float getError(vector<float> &label);
+        virtual double getError(vector<double> &label);
 
         /**
          * 
@@ -75,7 +76,7 @@ class Node{
          * @param epsilon the learning rate of the network in [0,1]
          *
          */
-        virtual void updateWeights(float learningRate);
+        virtual void updateWeights(double learningRate);
 
         /**
          *
@@ -87,12 +88,12 @@ class Node{
         virtual void clearCache();
 
     protected:
-        float sigmoid(float val);
+        double sigmoid(double val);
         bool hasOutput;
-        float lastOutput;
-        vector<float> *lastInput;
+        double lastOutput;
+        vector<double> *lastInput;
         bool hasError;
-        float error;
+        double error;
         vector<Edge*> *incomingEdges;
         vector<Edge*> *outgoingEdges;
 };
@@ -118,7 +119,7 @@ class OutputNode : public Node{
          *         of this node.
          *
          */
-        virtual float getError(vector<float> &label);
+        virtual double getError(vector<double> &label);
 
         /**
          *
@@ -129,7 +130,7 @@ class OutputNode : public Node{
          *        as the number of output nodes of the neural net.
          *
          */
-        void getOutput(vector<float>& outVec){
+        void getOutput(vector<double>& outVec){
         }
     private:
         int index;
@@ -159,7 +160,7 @@ class InputNode : public Node{
          * @return the value of this InputNode's respective feature
          *
          */
-        virtual float evaluate(vector<float> &inputVector);
+        virtual double evaluate(vector<double> &inputVector);
 
         /**
          *
@@ -171,7 +172,7 @@ class InputNode : public Node{
          * @return 0.0
          *
          */
-        virtual float getError(vector<float> &label);
+        virtual double getError(vector<double> &label);
 
         /**
          *
@@ -181,7 +182,7 @@ class InputNode : public Node{
          * @param epsilon the learning rate of the network in [0,1]
          *
          */
-        virtual void updateWeights(float learningRate);
+        virtual void updateWeights(double learningRate);
 
         /**
          *
@@ -215,7 +216,7 @@ class BiasNode : public InputNode{
          * @return 1.0
          *
          */
-        virtual float evaluate(vector<float> &inputVector);
+        virtual double evaluate(vector<double> &inputVector);
 };
 
 #endif

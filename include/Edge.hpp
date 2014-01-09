@@ -35,7 +35,7 @@ class Edge{
          * @return the weight of the edge.
          *
          */
-        float getWeight();
+        double getWeight();
 
         /**
          *
@@ -58,6 +58,6 @@ class Edge{
     protected:
         Node* source;
         Node* target;
-        float weight;
+        double weight;
 };
 #endif

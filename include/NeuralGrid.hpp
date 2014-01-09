@@ -16,6 +16,7 @@
 #define NEURALGRID_H
 
 #include <vector>
+#include <string>
 #include "Node.hpp"
 #include "Datum.hpp"
 
@@ -43,7 +44,7 @@ class NeuralGrid{
          *        data
          *
          */
-        NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOutputs, float learningRate, float maxIterations);
+        NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOutputs, double learningRate, double maxIterations);
 
         /**
          *
@@ -54,7 +55,7 @@ class NeuralGrid{
          *        feature extractor
          *
          */
-        vector<float>& evaluate(vector<float> inputVector);
+        vector<double>& evaluate(vector<double> inputVector);
 
         /**
          *
@@ -65,9 +66,11 @@ class NeuralGrid{
          */
         void train(vector<Datum> &data);
 
+        void toString();
+
     private:
         Node *biasNode;
-        void propogateError(vector<float> &label);
+        void propogateError(vector<double> &label);
         void updateWeights();
         int layerSize;
         int numLayers;
@@ -75,8 +78,8 @@ class NeuralGrid{
         int numOutputs;
         vector<InputNode*> *inputNodes;
         vector<OutputNode*> *outputNodes;
-        float learningRate;
-        float maxIterations;
+        double learningRate;
+        double maxIterations;
 };
 
 

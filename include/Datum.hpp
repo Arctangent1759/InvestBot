@@ -4,8 +4,8 @@
 #include <vector>
 using namespace std;
 typedef struct {
-    vector<float> features;
-    vector<float> label;
+    vector<double> features;
+    vector<double> label;
 } Datum;
 
 #endif
