@@ -21,8 +21,6 @@ Node::Node(){
 double Node::evaluate(vector<double> &inputVector){
     stringstream debugStr;
     if (this->hasOutput){
-        cout << (this->outgoingEdges->size()==0?"O":"N");
-        cout << "------->" << this->lastOutput << endl;
         return this->lastOutput;
     }
 
@@ -35,13 +33,8 @@ double Node::evaluate(vector<double> &inputVector){
         dotProd += (*(this->incomingEdges))[i]->getWeight() * inputVal;
         debugStr << (*(this->incomingEdges))[i]->getWeight() << " ";
     }
-    double x = (this->lastOutput=this->sigmoid(dotProd));
-    if (this->outgoingEdges->size()==0){
-        cout << debugStr.str() << endl;
-    }
-    cout << (this->outgoingEdges->size()==0?"O":"N");
-    cout << "------->" << x << endl;
-    return x;
+    this->lastOutput=this->sigmoid(dotProd);
+    return this->lastOutput;
 }
 
 double Node::getError(vector<double> &label){
@@ -56,7 +49,6 @@ double Node::getError(vector<double> &label){
         this->error+=(*(this->outgoingEdges))[i]->getWeight() 
             * (*(this->outgoingEdges))[i]->getTarget().getError(label);
     }
-    cout << "Node : " << this->error << endl;
     return this->error;
 }
 
@@ -66,7 +58,6 @@ void Node::updateWeights(double learningRate){
             (*(this->incomingEdges))[i]->weight += (learningRate 
                     * this->lastOutput * (1 - this->lastOutput) 
                     * this->error * (*(this->lastInput))[i]);
-            cout << "Delta : " << (learningRate * this->lastOutput * (1 - this->lastOutput) * this->error * (*(this->lastInput))[i]) << "\tWeight : " << (*(this->incomingEdges))[i]->weight << endl;
         }
         for (int i = 0; i < this->outgoingEdges->size(); i++){
             (*(this->outgoingEdges))[i]->getTarget().updateWeights(learningRate);
@@ -103,10 +94,8 @@ double OutputNode::getError(vector<double> &label){
         return this->error;
     }
     this->hasError=true;
-    cout << "(" << label[this->index] << ", " << this->lastOutput << ")" << endl;
-    double x =  (this->error=label[this->index]-this->lastOutput);
-    cout << "OutputNode : " << x << endl;
-    return x;
+    this->error=label[this->index]-this->lastOutput;
+    return this->error;
 }
 
 //////////////////////////////
@@ -118,17 +107,14 @@ InputNode::InputNode(int index) : Node(){
 }
 
 double InputNode::evaluate(vector<double> &inputVector){
-    double x = (this->lastOutput=inputVector[this->index]);
-    cout << "I------->" << x << endl;
-    return x;
+    this->lastOutput=inputVector[this->index];
+    return this->lastOutput;
 }
 
 double InputNode::getError(vector<double> &label){
-    cout << " >> InputNode" << endl;
     for (int i = 0; i < this->outgoingEdges->size(); i++){
         (*(this->outgoingEdges))[i]->getTarget().getError(label);
     }
-    cout << " << InputNode" << endl;
     return 0.0;
 }
 

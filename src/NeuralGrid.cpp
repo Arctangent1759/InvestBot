@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 #include "NeuralGrid.hpp"
 #include "Edge.hpp"
 #include "math.h"
@@ -84,40 +85,28 @@ void NeuralGrid::updateWeights(){
     }
 }
 
+
+void swapDatum(Datum &a, Datum &b){
+    Datum tmp = a;
+    a=b;
+    b=tmp;
+}
+void randomizeTrainingDataArray(vector<Datum> &data){
+    for (int i = data.size()-1; i >= 0; i--){
+        int j = rand()%(i+1);
+        swap(data[i],data[j]);
+    }
+}
+
 void NeuralGrid::train(vector<Datum> &data){
-    stringstream debugStr;
-    cout << "Traning Neural Grid..." << endl;
-    //cout << "<" << flush;
-    cout << "Learning Rate : " << this->learningRate << endl;
+    randomizeTrainingDataArray(data);
     for (int iterNum=0; iterNum < this->maxIterations;){
         int progressIncrement = maxIterations/20;
-        //cout << "--- Iteration " << iterNum << " ---" << endl;
-        //this->toString();
-        //cout << endl;
         for (int i = 0; i <data.size(); i++){
-            /*debugStr << */(this->evaluate(data[i].features))[0] /*<< " "*/;
-            cout << "=== DONE EVALUATING ===" << endl;
+            (this->evaluate(data[i].features))[0];
             this->propogateError(data[i].label);
-            cout << "=== DONE PROPAGATING ===" << endl;
             this->updateWeights();
-            cout << "=== DONE UPDATING ===" << endl;
             iterNum++;
         }
-        //cout << endl << debugStr.str() << endl;
-        //cout << endl << flush << endl;
     }
-    //cout << ">" << endl;
 }
-
-void NeuralGrid::toString(){
-    for (int i = 0; i < (*(this->inputNodes))[0]->outgoingEdges->size(); i++){
-        cout << (*((*(this->inputNodes))[0]->outgoingEdges))[i]->getWeight() << " ";
-    }
-    cout << endl;
-    for (int i = 0; i < (*(this->outputNodes))[0]->incomingEdges->size(); i++){
-        cout << (*((*(this->outputNodes))[0]->incomingEdges))[i]->getWeight() << " ";
-    }
-    cout << endl;
-}
-
-

@@ -66,8 +66,6 @@ class NeuralGrid{
          */
         void train(vector<Datum> &data);
 
-        void toString();
-
     private:
         Node *biasNode;
         void propogateError(vector<double> &label);

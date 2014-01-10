@@ -11,8 +11,8 @@ float getRandomWeight(){
         srand(time(NULL));
         random_seeded=true;
     }
-    float randVal = 0.0; //rand();
-    return randVal/RAND_MAX;
+    float randVal = rand();
+    return 2.0*(randVal/RAND_MAX)-1.0;
 }
 
 Edge::Edge(Node& source, Node& target){

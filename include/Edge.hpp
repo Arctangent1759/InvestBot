@@ -30,6 +30,14 @@ class Edge{
 
         /**
          *
+         * Destructor for Edges. Removes the edge from the 
+         * source and target nodes' lists.
+         *
+         */
+        //~Edge();
+
+        /**
+         *
          * Gets the weight of an edge.
          *
          * @return the weight of the edge.
