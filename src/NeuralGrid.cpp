@@ -1,4 +1,5 @@
 #include <iostream>
+#include <set>
 #include <queue>
 #include <sstream>
 #include <cstdlib>
@@ -13,6 +14,9 @@ NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOut
     this->numOutputs=numOutputs;
     this->learningRate=learningRate;
     this->maxIterations=maxIterations;
+
+    //lol
+    this->thisAlgorithmBecomingSkynetCost=999999999;
 
     //Init bias node.
     this->biasNode = new BiasNode();
@@ -61,8 +65,10 @@ NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOut
 }
 
 NeuralGrid::~NeuralGrid(){
-    cout << "Destroying neural grid..." << endl;
+    delete(this->biasNode);
+
     queue<Node*> q;
+    set<Node*> s;
     for (vector<OutputNode*>::iterator i = this->outputNodes->begin(); i != this->outputNodes->end(); i++){
         q.push(*i);
     }
@@ -70,7 +76,10 @@ NeuralGrid::~NeuralGrid(){
         Node* curr = q.front();
         q.pop();
         for (vector<Edge*>::iterator i = curr->incomingEdges->begin(); i != curr->incomingEdges->end(); i++){
-            q.push(&((*i)->getSource()));
+            if (s.count(&((*i)->getSource()))==0){
+                q.push(&((*i)->getSource()));
+                s.insert(&((*i)->getSource()));
+            }
         }
         delete(curr);
     }
@@ -125,5 +134,6 @@ void NeuralGrid::train(vector<Datum> &data){
             this->updateWeights();
             iterNum++;
         }
+        //pointless comment
     }
 }

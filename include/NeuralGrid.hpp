@@ -74,7 +74,7 @@ class NeuralGrid{
          */
         void train(vector<Datum> &data);
 
-    private:
+    protected:
         Node *biasNode;
         void propogateError(vector<double> &label);
         void updateWeights();
@@ -86,6 +86,8 @@ class NeuralGrid{
         vector<OutputNode*> *outputNodes;
         double learningRate;
         double maxIterations;
+
+        int thisAlgorithmBecomingSkynetCost;
 };
 
 

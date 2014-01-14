@@ -19,16 +19,12 @@ Node::Node(){
 }
 
 Node::~Node(){
-    cout << "Destroying node..." << endl;
     delete(this->lastInput);
     for (vector<Edge*>::iterator i = this->incomingEdges->begin(); i != this->incomingEdges->end(); i++){
         vector<Edge*> *sourceEdges = (*i)->source->outgoingEdges;
         for (vector<Edge*>::iterator j = sourceEdges->begin(); j != sourceEdges->end(); j++){
             if (*i==*j){
-                cout << "\tRemoving edge from outgoing list..." << endl;
                 sourceEdges->erase(j);
-                cout << "\tEdge removed..." << endl;
-                cout << "\tLength of source outgoing list: " << sourceEdges->size() << endl;
                 break;
             }
         }
@@ -36,19 +32,20 @@ Node::~Node(){
     }
     delete(this->incomingEdges);
     for (vector<Edge*>::iterator i = this->outgoingEdges->begin(); i != this->outgoingEdges->end(); i++){
-        vector<Edge*> *targetEdges = (*i)->source->incomingEdges;
+        vector<Edge*> *targetEdges = (*i)->target->incomingEdges;
         for (vector<Edge*>::iterator j = targetEdges->begin(); j != targetEdges->end(); j++){
             if (*i==*j){
-                cout << "\tRemoving edge from incoming list..." << endl;
                 targetEdges->erase(j);
-                cout << "\tEdge removed..." << endl;
-                cout << "\tLength of target outgoing list: " << targetEdges->size() << endl;
                 break;
             }
         }
         delete(*i);
     }
     delete(this->outgoingEdges);
+
+    //if only forgetting were
+    //this easy for me.
+    
 }
 
 double Node::evaluate(vector<double> &inputVector){

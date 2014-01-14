@@ -24,9 +24,7 @@ Edge::Edge(Node& source, Node& target){
     target.lastInput->push_back(0.0);
 }
 
-Edge::~Edge(){
-    cout << "Destroying edge..." << endl;
-}
+Edge::~Edge(){}
 
 double Edge::getWeight(){
     return this->weight;
