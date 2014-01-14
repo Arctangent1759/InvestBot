@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 #include <sstream>
 #include <cstdlib>
 #include "NeuralGrid.hpp"
@@ -56,6 +57,22 @@ NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOut
             new Edge(*(currLayer[j]),*((*(this->outputNodes))[i]));
         }
         new Edge(*(this->biasNode),*((*(this->outputNodes))[i]));
+    }
+}
+
+NeuralGrid::~NeuralGrid(){
+    cout << "Destroying neural grid..." << endl;
+    queue<Node*> q;
+    for (vector<OutputNode*>::iterator i = this->outputNodes->begin(); i != this->outputNodes->end(); i++){
+        q.push(*i);
+    }
+    while (!q.empty()){
+        Node* curr = q.front();
+        q.pop();
+        for (vector<Edge*>::iterator i = curr->incomingEdges->begin(); i != curr->incomingEdges->end(); i++){
+            q.push(&((*i)->getSource()));
+        }
+        delete(curr);
     }
 }
 

@@ -48,6 +48,14 @@ class NeuralGrid{
 
         /**
          *
+         * Destructor for Neural Grids. Destroys the neural Grid
+         * and its constituent Nodes and Edges.
+         *
+         */
+        ~NeuralGrid();
+
+        /**
+         *
          * Evaluates an input vector and returns the corresponding 
          * output values.
          *

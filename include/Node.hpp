@@ -44,6 +44,14 @@ class Node{
 
         /**
          *
+         * Destroys a node and all its edges.
+         * Disconnects the node from its parent neural net.
+         *
+         */
+        ~Node();
+
+        /**
+         *
          * Computes the dot product of the input vector
          * with the corresponding weights of this node's
          * incoming edges.
@@ -132,7 +140,7 @@ class OutputNode : public Node{
          */
         void getOutput(vector<double>& outVec){
         }
-    private:
+    protected:
         int index;
 };
 

@@ -34,7 +34,7 @@ class Edge{
          * source and target nodes' lists.
          *
          */
-        //~Edge();
+        ~Edge();
 
         /**
          *
