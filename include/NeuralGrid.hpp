@@ -74,6 +74,15 @@ class NeuralGrid{
          */
         void train(vector<Datum> &data);
 
+        /**
+         *
+         * Saves the trained neural grid to a file.
+         *
+         * @param filename the name of the file to be written to
+         *
+         */
+        void save(string filename);
+
     protected:
         Node *biasNode;
         void propogateError(vector<double> &label);
@@ -90,5 +99,6 @@ class NeuralGrid{
         int thisAlgorithmBecomingSkynetCost;
 };
 
+void randomizeTrainingDataArray(vector<Datum> &data);
 
 #endif

@@ -6,6 +6,7 @@
 #include "NeuralGrid.hpp"
 #include "Edge.hpp"
 #include "math.h"
+
 NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOutputs, double learningRate, double maxIterations){
     //Init params
     this->layerSize=layerSize;
@@ -112,11 +113,6 @@ void NeuralGrid::updateWeights(){
 }
 
 
-void swapDatum(Datum &a, Datum &b){
-    Datum tmp = a;
-    a=b;
-    b=tmp;
-}
 void randomizeTrainingDataArray(vector<Datum> &data){
     for (int i = data.size()-1; i >= 0; i--){
         int j = rand()%(i+1);
@@ -136,4 +132,7 @@ void NeuralGrid::train(vector<Datum> &data){
         }
         //pointless comment
     }
+}
+
+void NeuralGrid::save(string filename){
 }
