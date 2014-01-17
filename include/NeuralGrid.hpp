@@ -48,6 +48,17 @@ class NeuralGrid{
 
         /**
          *
+         * Constructs a neuralGrid from the contents of the file 
+         * specified by fileName.
+         *
+         * @param filename the path to the file containing the weights
+         *        data
+         *
+         */
+        NeuralGrid(string filename);
+
+        /**
+         *
          * Destructor for Neural Grids. Destroys the neural Grid
          * and its constituent Nodes and Edges.
          *

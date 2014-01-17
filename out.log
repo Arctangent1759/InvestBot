@@ -1,9 +1,2 @@
- Cleaning...
- rm -f -r build bin/runner
- g++  -g  -I include -c -o build/Node.o src/Node.cpp
- g++  -g  -I include -c -o build/Edge.o src/Edge.cpp
- g++  -g  -I include -c -o build/NeuralGrid.o src/NeuralGrid.cpp
- g++  -g  -I include -c -o build/NeuralClassifier.o src/NeuralClassifier.cpp
- g++  -g  -I include -c -o build/main.o src/main.cpp
- Linking...
- g++  build/Node.o build/Edge.o build/NeuralGrid.o build/NeuralClassifier.o build/main.o -o bin/runner 
+Root mean square error before training:4.04557
+Root mean square error after training:2.25117

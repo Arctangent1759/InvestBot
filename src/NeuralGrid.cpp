@@ -3,6 +3,7 @@
 #include <queue>
 #include <sstream>
 #include <cstdlib>
+#include <fstream>
 #include "NeuralGrid.hpp"
 #include "Edge.hpp"
 #include "math.h"
@@ -65,6 +66,100 @@ NeuralGrid::NeuralGrid(int layerSize, int numLayers, int numFeatures, int numOut
     }
 }
 
+void formatError(string filename){
+    cout << "Corrupted NeuralGrid save data " << filename << "." << endl;
+    exit(1);
+}
+
+NeuralGrid::NeuralGrid(string filename){
+    ifstream file(filename.c_str());
+    string labelRead;
+    Edge* e;
+    //Init parameters
+    cout << "Getting Params..." << endl;
+    file >> this->layerSize 
+        >> this->numLayers 
+        >> this->numFeatures 
+        >> this->numOutputs 
+        >> this->learningRate 
+        >> this->maxIterations;
+    //Init biasNode
+    this->biasNode = new BiasNode();
+    //Init input and output layers
+    this->inputNodes = new vector<InputNode*>(numFeatures);
+    this->outputNodes = new vector<OutputNode*>(numOutputs);
+    for (int i = 0; i < this->inputNodes->size(); i++){
+        (*(this->inputNodes))[i] = new InputNode(i);
+    }
+    for (int i = 0; i < this->outputNodes->size(); i++){
+        (*(this->outputNodes))[i] = new OutputNode(i);
+    }
+    //Create grid
+    vector< vector<Node*> > nodes(this->numLayers);
+    for (int i = 0; i < nodes.size(); i++){
+        nodes[i]=vector<Node*>(this->layerSize);
+        for (int j = 0; j < nodes[0].size(); j++){
+            nodes[i][j]=new Node();
+        }
+    }
+    //Link first layer to output
+    cout << "Linking first layer..." << endl;
+    file >> labelRead;
+    cout << labelRead << endl;
+    if (labelRead!="==begin_layer=="){
+        formatError(filename);
+    }
+    for (int i = 0; i < this->outputNodes->size(); i++){
+        for (int j = 0; j < nodes[0].size(); j++){
+            e = new Edge(*(nodes[0][j]),*(*(this->outputNodes))[i]);
+            file >> e->weight;
+            cout << e->weight << " ";
+        }
+        e = new Edge(*(this->biasNode),*(*(this->outputNodes))[i]);
+        file >> e->weight;
+        cout << e->weight << endl;
+    }
+    //Link rest of layers
+    cout << "Linking hidden layers..." << endl;
+    for (int layerIndex = 1; layerIndex < nodes.size(); layerIndex++){
+        file >> labelRead;
+        cout << labelRead << endl;
+        if (labelRead!="==begin_layer=="){
+                formatError(filename);
+        }
+        for (int i = 0; i < nodes[layerIndex-1].size(); i++){
+            for (int j = 0; j < nodes[layerIndex].size(); j++){
+                e = new Edge(*(nodes[layerIndex][j]),*(nodes[layerIndex-1][i]));
+                file >> e->weight;
+                cout << e->weight << " ";
+            }
+            e = new Edge(*(this->biasNode),*(nodes[layerIndex-1][i]));
+            file >> e->weight;
+            cout << e->weight << endl;
+        }
+    }
+    //Link last layer to input
+    cout << "Linking last layer..." << endl;
+    file >> labelRead;
+    cout << labelRead << endl;
+    if (labelRead!="==begin_layer=="){
+        formatError(filename);
+    }
+    for (int i = 0; i < nodes[nodes.size()-1].size(); i++){
+        for (int j = 0; j < this->inputNodes->size(); j++){
+            e = new Edge(*((*(this->inputNodes))[j]),*(nodes[nodes.size()-1][i]));
+            file >> e->weight;
+            cout << e->weight << " ";
+        }
+        e = new Edge(*(this->biasNode),*(nodes[nodes.size()-1][i]));
+        file >> e->weight;
+        cout << e->weight << endl;
+    }
+
+    file.close();
+}
+
+
 NeuralGrid::~NeuralGrid(){
     delete(this->biasNode);
 
@@ -72,6 +167,7 @@ NeuralGrid::~NeuralGrid(){
     set<Node*> s;
     for (vector<OutputNode*>::iterator i = this->outputNodes->begin(); i != this->outputNodes->end(); i++){
         q.push(*i);
+        s.insert(*i);
     }
     while (!q.empty()){
         Node* curr = q.front();
@@ -135,4 +231,47 @@ void NeuralGrid::train(vector<Datum> &data){
 }
 
 void NeuralGrid::save(string filename){
+
+    ofstream file(filename.c_str());
+
+    //Write metadata to first line
+    file << this->layerSize 
+        << " " << this->numLayers 
+        << " " << this->numFeatures 
+        << " " << this->numOutputs 
+        << " " << this->learningRate 
+        << " " << this->maxIterations << endl;
+
+    queue<Node*> q;
+    set<Node*> s;
+
+    for (vector<OutputNode*>::iterator i = this->outputNodes->begin(); 
+            i != this->outputNodes->end(); i++){
+        q.push(*i);
+        s.insert(*i);
+    }
+
+    s.insert(this->biasNode);
+
+    while (!q.empty()){
+        Node* curr = q.front();
+        q.pop();
+        for (vector<Edge*>::iterator i = curr->incomingEdges->begin(); 
+                i != curr->incomingEdges->end(); i++){
+            //Print weights of curr node on a seperate line.
+            if (s.count(&((*i)->getSource()))==0){
+                q.push(&((*i)->getSource()));
+                s.insert(&((*i)->getSource()));
+                if (i == curr->incomingEdges->begin()){
+                    file << "==begin_layer==" << endl;
+                }
+            }
+
+            file << (*i)->getWeight() << " ";
+
+        }
+        file << endl;
+    }
+
+    file.close();
 }

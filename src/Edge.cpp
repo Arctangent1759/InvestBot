@@ -24,6 +24,15 @@ Edge::Edge(Node& source, Node& target){
     target.lastInput->push_back(0.0);
 }
 
+Edge::Edge(Node& source, Node& target, double weight){
+    this->source=&source;
+    this->target=&target;
+    this->weight=weight;
+    source.outgoingEdges->push_back(this);
+    target.incomingEdges->push_back(this);
+    target.lastInput->push_back(0.0);
+}
+
 Edge::~Edge(){}
 
 double Edge::getWeight(){

@@ -18,6 +18,7 @@ class Node;
 class Edge{
     public:
         friend class Node;
+        friend class NeuralGrid;
 
         /**
          *
@@ -25,8 +26,24 @@ class Edge{
          * Node's list of incoming and outgoing edges to match
          * the updated state of the neural net.
          *
+         * @param source the source node of the edge
+         * @param target the target node of the edge
+         *
          */
         Edge(Node& source, Node& target);
+
+        /**
+         *
+         * Constructs a new Edge and updates the each involved
+         * Node's list of incoming and outgoing edges to match
+         * the updated state of the neural net.
+         *
+         * @param source the source node of the edge
+         * @param target the target node of the edge
+         * @param weight the weight of the resulting edge
+         *
+         */
+        Edge(Node& source, Node& target, double weight);
 
         /**
          *
