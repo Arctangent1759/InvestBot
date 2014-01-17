@@ -44,6 +44,38 @@ class NeuralClassifier{
         NeuralClassifier(int layerSize, int maxLayers, 
                 double learningRate, int iterations, 
                 vector<Datum> &trainingData);
+
+        /**
+         *
+         * Constructs a neural classifier from a saved neural grid 
+         * file.
+         *
+         * @param filename the location of the neural grid save file.
+         *
+         */
+        NeuralClassifier(string filename);
+
+        /**
+         *
+         * Saves the data in the neural grid to the file located at
+         * filename.
+         *
+         * @param filename the location of the file to save the 
+         *        neural grid
+         *
+         */
+        void save(string filename);
+
+        /**
+         *
+         * Loads the data in the save file located at filename. 
+         * Replaces the current grid with the loaded grid.
+         *
+         * @param filename the location of the neural grid save file.
+         *
+         */
+        void load(string filename);
+
         /**
          *
          * Destroys a neural classifier

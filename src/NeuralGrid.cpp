@@ -76,7 +76,6 @@ NeuralGrid::NeuralGrid(string filename){
     string labelRead;
     Edge* e;
     //Init parameters
-    cout << "Getting Params..." << endl;
     file >> this->layerSize 
         >> this->numLayers 
         >> this->numFeatures 
@@ -103,9 +102,7 @@ NeuralGrid::NeuralGrid(string filename){
         }
     }
     //Link first layer to output
-    cout << "Linking first layer..." << endl;
     file >> labelRead;
-    cout << labelRead << endl;
     if (labelRead!="==begin_layer=="){
         formatError(filename);
     }
@@ -113,17 +110,13 @@ NeuralGrid::NeuralGrid(string filename){
         for (int j = 0; j < nodes[0].size(); j++){
             e = new Edge(*(nodes[0][j]),*(*(this->outputNodes))[i]);
             file >> e->weight;
-            cout << e->weight << " ";
         }
         e = new Edge(*(this->biasNode),*(*(this->outputNodes))[i]);
         file >> e->weight;
-        cout << e->weight << endl;
     }
     //Link rest of layers
-    cout << "Linking hidden layers..." << endl;
     for (int layerIndex = 1; layerIndex < nodes.size(); layerIndex++){
         file >> labelRead;
-        cout << labelRead << endl;
         if (labelRead!="==begin_layer=="){
                 formatError(filename);
         }
@@ -131,17 +124,13 @@ NeuralGrid::NeuralGrid(string filename){
             for (int j = 0; j < nodes[layerIndex].size(); j++){
                 e = new Edge(*(nodes[layerIndex][j]),*(nodes[layerIndex-1][i]));
                 file >> e->weight;
-                cout << e->weight << " ";
             }
             e = new Edge(*(this->biasNode),*(nodes[layerIndex-1][i]));
             file >> e->weight;
-            cout << e->weight << endl;
         }
     }
     //Link last layer to input
-    cout << "Linking last layer..." << endl;
     file >> labelRead;
-    cout << labelRead << endl;
     if (labelRead!="==begin_layer=="){
         formatError(filename);
     }
@@ -149,11 +138,9 @@ NeuralGrid::NeuralGrid(string filename){
         for (int j = 0; j < this->inputNodes->size(); j++){
             e = new Edge(*((*(this->inputNodes))[j]),*(nodes[nodes.size()-1][i]));
             file >> e->weight;
-            cout << e->weight << " ";
         }
         e = new Edge(*(this->biasNode),*(nodes[nodes.size()-1][i]));
         file >> e->weight;
-        cout << e->weight << endl;
     }
 
     file.close();

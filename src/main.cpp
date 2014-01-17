@@ -1,80 +1,84 @@
-#include "NeuralGrid.hpp"
+#include "NeuralClassifier.hpp"
 #include <iostream>
-#include "math.h"
+#include <math.h>
 
-double f(double x){
-    if (x<15){
-        return 0.75;
-    }else if (x == 15){
-        return 0.5;
-    }else if (x < 30){
-        return 0.25;
-    }else if (x==30){
-        return 0.5;
-    }else{
-        return 0.75;
-    }
+#define _USE_MATH_DEFINES
+
+#define F_DATA_RANGE (45)
+
+#define DATA_DIMENSION (20)
+
+double f(double x, double y){
+    return x>y?0.8:0.2;
+}
+double g(double x, double y){
+    return x>y?0.2:0.8;
 }
 
 int main(){
-    /**
-    NeuralGrid* n = new NeuralGrid(5,2,1,1,0.01,1000000);
 
 
-    n->save("simple_initial.dat");
+    vector<Datum> trainingData(DATA_DIMENSION*DATA_DIMENSION);
 
-    vector<Datum> trainingData(200);
-    for (int i = 0.0; i < trainingData.size() ; i++){
-        double x = i*45/trainingData.size();
-        double y = f(x);
-        trainingData[i].features = vector<double>(1,x);
-        trainingData[i].label = vector<double>(1,y);
+    for (int i = 0.0; i < DATA_DIMENSION ; i++){
+        for (int j = 0.0; j < DATA_DIMENSION ; j++){
+            double x = i*F_DATA_RANGE/DATA_DIMENSION;
+            double y = j*F_DATA_RANGE/DATA_DIMENSION;
+            double fx = f(x,y);
+            double gx = g(x,y);
+            trainingData[i+DATA_DIMENSION*j].features = vector<double>(2);
+            trainingData[i+DATA_DIMENSION*j].features[0] = x;
+            trainingData[i+DATA_DIMENSION*j].features[1] = y;
+            trainingData[i+DATA_DIMENSION*j].label = vector<double>(2);
+            trainingData[i+DATA_DIMENSION*j].label[0]=fx;
+            trainingData[i+DATA_DIMENSION*j].label[1]=gx;
+        }
     }
+    NeuralClassifier& n = *(new NeuralClassifier(20,30,0.01,50000,trainingData));
 
-    double rmsError=0.0;
-    for (int i = 0.0; i < trainingData.size() ; i++){
-        double x = i*45/trainingData.size();
-        double actualVal = f(x);
-        double netOutput=(n->evaluate(vector<double>(1,x))[0]);
-        rmsError+=(actualVal-netOutput)*(actualVal-netOutput);
+    double fError = 0.0;
+    double gError = 0.0;
+
+    //Testing
+    for (int i = 0.0; i < DATA_DIMENSION ; i++){
+        for (int j = 0.0; j < DATA_DIMENSION ; j++){
+            double x = i*F_DATA_RANGE/DATA_DIMENSION;
+            double y = j*F_DATA_RANGE/DATA_DIMENSION;
+            double fx = f(x,y);
+            double gx = g(x,y);
+            vector<double> input(2);
+            input[0]=x;
+            input[1]=y;
+            vector<double> netOutput=n.evaluate(input);
+            fError+=(netOutput[0]-fx)*(netOutput[0]-fx);
+            gError+=(netOutput[0]-gx)*(netOutput[0]-gx);
+        }
     }
-    rmsError=sqrt(rmsError);
+    cout << "Root-mean-square error : " << sqrt(fError)+sqrt(gError) << endl;
 
-    cout << "Root mean square error before training:" << rmsError << endl;
+    n.save("multi_var_grid.dat");
+    //NeuralClassifier& n = *(new NeuralClassifier("multi_var_grid.dat"));
 
-    n->train(trainingData);
+    double userInputX;
+    double userInputY;
 
-    for (int i = 0.0; i < trainingData.size() ; i++){
-        double x = i*45/trainingData.size();
-        double actualVal = f(x);
-        double netOutput=(n->evaluate(vector<double>(1,x))[0]);
-        rmsError+=(actualVal-netOutput)*(actualVal-netOutput);
-    }
-    rmsError=sqrt(rmsError);
-
-    cout << "Root mean square error after training:" << rmsError << endl;
-
-
-    n->save("simple_trained.dat");
-
-    cout << "Deleting old grid..." << endl;
-    delete n;
-    **/
-
-    cout << "Loading..." << endl;
-    NeuralGrid* n = new NeuralGrid("simple_initial.dat");
-    n->save("restored_trained.dat");
-
-    double userInput;
     while (true){
         cout << ">> ";
-        cin >> userInput;
+        cin >> userInputX >> userInputY;
+        if (userInputX==-1111.1111){
+            break;
+        }
         cout << endl;
-        double netOutput=(n->evaluate(vector<double>(1,userInput))[0]);
-        double actualVal=f(userInput);
-        cout << "Value computed by neural net:\t" << netOutput << endl;
-        cout << "Value computed by f:\t" << actualVal << endl;
-        cout << "Error : \t\t" << netOutput - actualVal << endl;
+        vector<double> userInput(2);
+        userInput[0]=userInputX;
+        userInput[1]=userInputY;
+        vector<double> netOutput=n.evaluate(userInput);
+        double actualF=f(userInputX,userInputY);
+        double actualG=g(userInputX,userInputY);
+        cout << "Value computed by neural net:\t" << netOutput[0] << " " << netOutput[1] << endl;
+        cout << "Value computed by f,g:\t" << actualF << " " << actualG << endl;
+        cout << "Error : \t\t" << netOutput[0] - actualF << " " << netOutput[1] - actualG << endl;
     }
-    delete n;
+    delete &n;
+    return 0;
 }
