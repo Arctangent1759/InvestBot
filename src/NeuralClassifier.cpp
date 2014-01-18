@@ -33,7 +33,7 @@ void NeuralClassifier::init(int layerSize, int minLayers,
     vector<Datum> training;
     vector<Datum> heldOut;
     vector<Datum> validation;
-    
+
     //cout << "Preparing data..." << endl;
 
     randomizeTrainingDataArray(trainingData);
@@ -53,8 +53,10 @@ void NeuralClassifier::init(int layerSize, int minLayers,
 
     for (int numLayers = minLayers; numLayers <= maxLayers; numLayers++){
         //cout << "Training grid with " << numLayers << " layers..." << endl;
-        
-        NeuralGrid* curr = new NeuralGrid(layerSize, numLayers, training[0].features.size(), training[0].label.size(), learningRate, iterations);
+
+        NeuralGrid* curr = new NeuralGrid(layerSize, numLayers, 
+                training[0].features.size(), training[0].label.size(), 
+                learningRate, iterations);
         curr->train(training);
         double score = this->getAccuracy(curr,heldOut);
         //cout << "\tGrid score : " << score << endl;
